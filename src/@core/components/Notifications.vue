@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { avatarText } from '@core/utils/formatters'
+import { baseURL } from '@/plugins/axios'
 import type { Notification } from '@layouts/types'
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
+import axios from 'axios'
+const emit = defineEmits(['success'])
 
 interface Props {
   notifications: Notification[]
@@ -9,35 +10,30 @@ interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   location?: any
 }
-interface Emit {
-  (e: 'read', value: number[]): void
-  (e: 'unread', value: number[]): void
-  (e: 'remove', value: number): void
-  (e: 'click:notification', value: Notification): void
-}
+
+const data = ref({
+  body: '',
+  title: '',
+})
+const isLoading = ref(false)
 
 const props = withDefaults(defineProps<Props>(), {
   location: 'bottom end',
   badgeProps: undefined,
 })
 
-const emit = defineEmits<Emit>()
 
-const isAllMarkRead = computed(() => props.notifications.some(item => item.isRead === false),
-)
-
-const markAllReadOrUnread = () => {
-  const allNotificationsIds = props.notifications.map(item => item.id)
-
-  if (!isAllMarkRead.value)
-    emit('unread', allNotificationsIds)
-  else
-    emit('read', allNotificationsIds)
+function post() {
+  isLoading.value = true
+  axios.post(`${baseURL}/notifications`, data.value).then((res) => {
+    isLoading.value = false
+    emit('success')
+    data.value = {
+      body: '',
+      title: '',
+    }
+  })
 }
-
-const totalUnseenNotifications = computed(() => {
-  return props.notifications.filter(item => item.isRead === false).length
-})
 </script>
 
 <template>
@@ -49,83 +45,17 @@ const totalUnseenNotifications = computed(() => {
 
     <VMenu activator="parent" width="380px" :location="props.location" offset="14px" :close-on-content-click="false">
       <VCard class="d-flex flex-column">
-        <!-- 👉 Header -->
         <VCardItem class="notification-section">
           <VCardTitle class="text-lg">
             الاشعارات
           </VCardTitle>
-
-          <template #append>
-            <IconBtn v-show="props.notifications.length" @click="markAllReadOrUnread">
-              <VIcon :icon="!isAllMarkRead ? 'tabler-mail' : 'tabler-mail-opened'" />
-
-              <VTooltip activator="parent" location="start">
-                {{ !isAllMarkRead ? 'Mark all as unread' : 'Mark all as read' }}
-              </VTooltip>
-            </IconBtn>
-          </template>
-        </VCardItem>
-
-        <VDivider />
-
-        <!-- 👉 Notifications list -->
-        <PerfectScrollbar :options="{ wheelPropagation: false }" style="max-block-size: 23.75rem;">
-          <VList class="notification-list rounded-0 py-0">
-            <template v-for="(notification, index) in props.notifications" :key="notification.title">
-              <VDivider v-if="index > 0" />
-              <VListItem link lines="one" min-height="66px" class="list-item-hover-class"
-                @click="$emit('click:notification', notification)">
-                <!-- Slot: Prepend -->
-                <!-- Handles Avatar: Image, Icon, Text -->
-                <template #prepend>
-                  <VListItemAction start>
-                    <VAvatar size="40" :color="notification.color && notification.icon ? notification.color : undefined"
-                      :image="notification.img || undefined" :icon="notification.icon || undefined"
-                      :variant="notification.img ? undefined : 'tonal'">
-                      <span v-if="notification.text">{{ avatarText(notification.text) }}</span>
-                    </VAvatar>
-                  </VListItemAction>
-                </template>
-
-                <VListItemTitle>{{ notification.title }}</VListItemTitle>
-                <VListItemSubtitle>{{ notification.description }}</VListItemSubtitle>
-                <span class="text-xs text-disabled">
-                  {{ notification.date.substr(11, 5) }}
-                  {{ notification.date.substr(0, 10) }}
-                </span>
-
-                <!-- Slot: Append -->
-                <template #append>
-                  <div class="d-flex flex-column align-center gap-4">
-                    <VBadge dot :color="!notification.isRead ? 'primary' : '#a8aaae'"
-                      :class="`${notification.isRead ? 'visible-in-hover' : ''} ms-1`"
-                      @click.stop="$emit(notification.isRead ? 'unread' : 'read', [notification.id])" />
-
-                    <div style="block-size: 28px; inline-size: 28px;">
-                      <IconBtn size="small" class="visible-in-hover" @click="$emit('remove', notification.id)">
-                        <VIcon size="20" icon="tabler-x" />
-                      </IconBtn>
-                    </div>
-                  </div>
-                </template>
-              </VListItem>
-            </template>
-
-            <VListItem v-show="!props.notifications.length" class="text-center text-medium-emphasis"
-              style="block-size: 56px;">
-              <VListItemTitle>No Notification Found!</VListItemTitle>
-            </VListItem>
-          </VList>
-        </PerfectScrollbar>
-
-        <VDivider />
-
-        <!-- 👉 Footer -->
-        <VCardActions v-show="props.notifications.length" class="notification-footer">
-          <VBtn block>
-            معاينة المزيد من الاشعارات
+          <AppTextField v-model="data.title" label="title" />
+          <AppTextField v-model="data.body" label="body" />
+          <br>
+          <VBtn :loading="isLoading" color="error" @click="post()">
+            حفظ
           </VBtn>
-        </VCardActions>
+        </VCardItem>
       </VCard>
     </VMenu>
   </IconBtn>

@@ -38,14 +38,14 @@ import { ref } from 'vue'
 const notifications = ref<Notification[]>([])
 const router = useRouter()
 
-const getNotifications = async () => {
-  const response = await axios.get('/notification')
-  const data = await response.data.data
+// const getNotifications = async () => {
+//   const response = await axios.get('/notification')
+//   const data = await response.data.data
 
-  notifications.value = data
-}
+//   notifications.value = data
+// }
 
-getNotifications()
+// getNotifications()
 
 const removeNotification = (notificationId: string | number) => {
   notifications.value.forEach((item, index) => {
