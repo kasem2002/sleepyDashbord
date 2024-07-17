@@ -46,6 +46,7 @@ interface Props {
   onRowClick?: (item: any) => void
   viewType?: ViewType
   hideViewType?: boolean
+  onEdit?: (item: any) => void
   data?: any[]
   hideReopen?: boolean
 }
@@ -217,33 +218,37 @@ const openCreate = () => {
 }
 
 const openEdit = item => {
-  tableStore.setFields(
-    props.fields
-      .filter(x => !x.hideInEdit)
-      .map(field => {
-        const customField = field.field as FieldTypes
+  if (props.onEdit) {
+    props.onEdit(item)
+  } else {
+    tableStore.setFields(
+      props.fields
+        .filter(x => !x.hideInEdit)
+        .map(field => {
+          const customField = field.field as FieldTypes
 
-        customField.label = field.label
-        customField.modelValueKey = field.key
-        customField.dependsOn = field.dependsOn
+          customField.label = field.label
+          customField.modelValueKey = field.key
+          customField.dependsOn = field.dependsOn
 
-        return customField
-      }),
-  )
-  tableStore.setDialogTitle('تعديل')
-  tableStore.setEdit(item.id)
+          return customField
+        }),
+    )
+    tableStore.setDialogTitle('تعديل')
+    tableStore.setEdit(item.id)
 
-  tableStore.setFormDialog(true)
+    tableStore.setFormDialog(true)
 
-  const initialData = tableStore.createFields.reduce((acc, curr) => {
-    if (curr.options?.valueFrom)
-      acc[curr.modelValueKey as string] = _.get(item, curr.options?.valueFrom)
-    else acc[curr.modelValueKey as string] = item[curr.modelValueKey as string]
+    const initialData = tableStore.createFields.reduce((acc, curr) => {
+      if (curr.options?.valueFrom)
+        acc[curr.modelValueKey as string] = _.get(item, curr.options?.valueFrom)
+      else acc[curr.modelValueKey as string] = item[curr.modelValueKey as string]
 
-    return acc
-  }, {} as any)
+      return acc
+    }, {} as any)
 
-  tableStore.setInitialData(initialData)
+    tableStore.setInitialData(initialData)
+  }
 }
 
 const resetFilters = () => {

@@ -1,67 +1,100 @@
-import type { FieldTypes } from '@/components/app-form/types'
-import type { ApiUrls } from '@/models/apiUrls'
+import type { FieldTypes } from "@/components/app-form/types";
+import type { ApiUrls } from "@/models/apiUrls";
 
-export const useTableStore = defineStore('app-table', () => {
-  const data = ref<any[]>([])
-  const title = ref('نظام الدعم الفني')
-  const isDeleteDialogOpen = ref(false)
-  const deletedItemId = ref<string | number>('')
-  const isFormDialogOpen = ref(false)
-  const createFields = ref<FieldTypes[]>([])
-  const initalData = ref()
-  const dialogTitle = ref('')
-  const urls = ref<ApiUrls>()
-  const isLoading = ref(false)
-  const refresh = ref(false)
-  const editId = ref<string | number | undefined>()
+export const useTableStore = defineStore("app-table", () => {
+  const data = ref<any[]>([]);
+  const title = ref("نظام الدعم الفني");
+  const isDeleteDialogOpen = ref(false);
+  const showRole = ref(false);
+  const RoleId = ref(false);
+  const deletedItemId = ref<string | number>("");
+  const isFormDialogOpen = ref(false);
+  const createFields = ref<FieldTypes[]>([]);
+  const initalData = ref();
+  const dialogTitle = ref("");
+  const urls = ref<ApiUrls>();
+  const isLoading = ref(false);
+  const refresh = ref(false);
+  const editId = ref<string | number | undefined>();
 
   const setTitle = (value: string) => {
-    title.value = value
-  }
+    title.value = value;
+  };
 
   const setRefresh = (value: boolean) => {
-    refresh.value = value
-  }
+    refresh.value = value;
+  };
 
   const setEdit = (value: string | number | undefined) => {
-    editId.value = value
-  }
+    editId.value = value;
+  };
 
   const setLoading = (value: boolean) => {
-    isLoading.value = value
-  }
+    isLoading.value = value;
+  };
 
   const setUrls = (value: ApiUrls) => {
-    urls.value = value
-  }
+    urls.value = value;
+  };
 
   const setDialogTitle = (title: string) => {
-    dialogTitle.value = title
-  }
+    dialogTitle.value = title;
+  };
 
   const setInitialData = (value: any) => {
-    initalData.value = value
-  }
+    initalData.value = value;
+  };
 
   const setFields = (fields: FieldTypes[]) => {
-    createFields.value = fields
-  }
+    createFields.value = fields;
+  };
 
   const setFormDialog = (value: boolean) => {
-    isFormDialogOpen.value = value
-  }
+    isFormDialogOpen.value = value;
+  };
 
   const setData = (newData: any[]) => {
-    data.value = newData
-  }
+    data.value = newData;
+  };
 
   const setDeleteDialog = (value: boolean) => {
-    isDeleteDialogOpen.value = value
-  }
-
+    isDeleteDialogOpen.value = value;
+  };
+  const setEditRole = (value: object) => {
+    showRole.value = value.show;
+    RoleId.value = value.id;
+  };
   const setDeletedItemId = (value: string | number) => {
-    deletedItemId.value = value
-  }
+    deletedItemId.value = value;
+  };
 
-  return { title, setTitle, refresh, setRefresh, setEdit, editId, setLoading, isLoading, urls, setUrls, data, isDeleteDialogOpen, setData, setDeleteDialog, setDeletedItemId, deletedItemId, setFormDialog, isFormDialogOpen, createFields, setFields, setInitialData, initalData, setDialogTitle, dialogTitle }
-})
+  return {
+    title,
+    setTitle,
+    refresh,
+    setRefresh,
+    setEdit,
+    editId,
+    setLoading,
+    isLoading,
+    urls,
+    setUrls,
+    data,
+    isDeleteDialogOpen,
+    setData,
+    setDeleteDialog,
+    setDeletedItemId,
+    deletedItemId,
+    setFormDialog,
+    isFormDialogOpen,
+    createFields,
+    setFields,
+    setInitialData,
+    initalData,
+    setDialogTitle,
+    dialogTitle,
+    showRole,
+    RoleId,
+    setEditRole,
+  };
+});

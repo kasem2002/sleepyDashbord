@@ -3,8 +3,11 @@ import { requiredValidator } from "@/@core/utils/validators";
 import { FieldType } from "@/components/app-form/types";
 import AppTable from "@/components/app-table/AppTable.vue";
 import type { TableField } from "@/components/app-table/types";
+import EditRole from "@/components/dialogs/EditRole.vue";
 import { UserRole, getEnumName } from "@/constants/enums";
 import type { ApiUrls } from "@/models/apiUrls";
+import { useTableStore } from "@/stores/AppTableStore";
+const tableStore = useTableStore()
 
 const urls: ApiUrls = {
   get: "/role",
@@ -15,7 +18,7 @@ const urls: ApiUrls = {
 
 const tableFields: TableField[] = [
   {
-    key: "action",
+    key: "name",
     label: "الاسم ",
     create: true,
     isMainFilter: true,
@@ -26,93 +29,44 @@ const tableFields: TableField[] = [
       type: FieldType.Text,
     },
   },
-
   {
     key: "id",
-    label: "الرقم",
-    create: true,
+    label: " الرقم",
+    create: false,
     isMainFilter: true,
     filterable: true,
     field: {
       cols: 12,
       validations: [requiredValidator],
       type: FieldType.Text,
-    },
-  },
-
-  {
-    key: "password",
-    label: "الرمز السري",
-    hideInTable: true,
-    hideInEdit: true,
-    create: true,
-    field: {
-      cols: 12,
-      validations: [requiredValidator],
-      type: FieldType.Text,
-    },
-  },
-
-  {
-    key: "role",
-    label: "الصلاحيات",
-    create: true,
-    hideInEdit: true,
-    isMainFilter: true,
-    filterable: true,
-    field: {
-      cols: 12,
-      validations: [requiredValidator],
-      type: FieldType.Select,
-      options: {
-        items: UserRole,
-        itemLabel: "arName",
-        itemValue: "value",
-      },
     },
   },
   {
     key: "creationDate",
-    label: "تاريخ الانشاء ",
+    label: "تاريخ الانشاء",
     create: false,
-    hideInEdit: true,
+    isMainFilter: false,
+    filterable: true,
     field: {
       cols: 12,
       validations: [requiredValidator],
-      type: FieldType.Date,
-    },
-  },
-  {
-    key: "isActive",
-    label: "حالة التفعيل",
-    create: false,
-    isMainFilter: true,
-    field: {
-      cols: 12,
-      type: FieldType.Radio,
-      options: {
-        items: [
-          {
-            title: "مفعل",
-            value: true,
-          },
-          {
-            title: "غير مفعل",
-            value: false,
-          },
-        ],
-        itemLabel: "title",
-        itemValue: "value",
-      },
+      type: FieldType.Text,
     },
   },
 
   // NOTE بقى IS ACTIVE في التعديل ممسويتها
 ];
+function edit(e: any) {
+  tableStore.setEditRole({
+    id: e.id,
+    show: true,
+  });
+}
 </script>
 
 <template>
-  <AppTable :fields="tableFields" pagination title="المستخدمين" :urls="urls" add-btn-text="اضافة" have-actions>
+  <AppTable :fields="tableFields" pagination title="" :on-edit="(e) => edit(e)" hide-delete have-actions hide-view-type
+    :urls="urls" add-btn-text="اضافة">
     <template #role="{ item }">
       <VChip :color="getEnumName(UserRole, item.role).color">
         {{ getEnumName(UserRole, item.role).arName }}
@@ -126,4 +80,5 @@ const tableFields: TableField[] = [
       </template>
     -->
   </AppTable>
+  <EditRole />
 </template>

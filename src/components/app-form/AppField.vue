@@ -79,6 +79,9 @@ watch(() => props.modelValue, () => {
     <VRadio v-for="item in field.options?.items" :key="getItemValue(item)" class="m-0 p-0" :label="getItemLabel(item)"
       hide-details="auto" :value="getItemValue(item)" />
   </VRadioGroup>
+  <v-color-picker v-else-if="field.type === FieldType.Color" v-model="value" :label="field.label"
+    :rules="!props.isFilter ? field.validations : []" clearable />
+
   <div v-else-if="field.type === FieldType.Checkbox" class="d-flex align-center">
     <VCheckbox v-for="item in field.options?.items" :key="getItemValue(item)" v-model="value"
       :label="getItemLabel(item)" hide-details="auto" :value="getItemValue(item)" />

@@ -55,6 +55,7 @@ declare module '@vue/runtime-core' {
     CustomRadiosWithImage: typeof import('./src/@core/components/app-form-elements/CustomRadiosWithImage.vue')['default']
     DeleteConfirmDialog: typeof import('./src/components/app-table/DeleteConfirmDialog.vue')['default']
     DialogCloseBtn: typeof import('./src/@core/components/DialogCloseBtn.vue')['default']
+    EditRole: typeof import('./src/components/dialogs/EditRole.vue')['default']
     EnableOneTimePasswordDialog: typeof import('./src/components/dialogs/EnableOneTimePasswordDialog.vue')['default']
     ErrorHeader: typeof import('./src/components/ErrorHeader.vue')['default']
     FormDialog: typeof import('./src/components/app-table/FormDialog.vue')['default']

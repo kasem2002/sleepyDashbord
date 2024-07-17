@@ -38,6 +38,7 @@ const tableFields: TableField[] = [
       type: FieldType.Text,
     },
   },
+
   {
     key: "artUrl",
     label: "الصورة",
@@ -50,6 +51,18 @@ const tableFields: TableField[] = [
       validations: [],
       type: FieldType.File,
       multiple: false,
+    },
+  },
+  {
+    key: "color",
+    label: "اللون",
+    create: true,
+    isMainFilter: false,
+    filterable: true,
+    field: {
+      cols: 12,
+      validations: [requiredValidator],
+      type: FieldType.Color,
     },
   },
 
@@ -66,6 +79,11 @@ function formater(path: string) {
     have-actions>
     <template #artUrl="{ item }">
       <v-img alt="Avatar" style="height: 50px;" :src="formater(item.artUrl)"></v-img>
+    </template>
+    <template #color="{ item }">
+      <v-chip :color="item.color">
+        {{ item.color }}
+      </v-chip>
     </template>
     <!--
       <template #isActive="{ item }">
